@@ -1,7 +1,7 @@
 import type { SavedResult } from '../types';
 
 const STORAGE_KEY = 'mago-seminar-result';
-const CURRENT_VERSION = 2;
+const CURRENT_VERSION = 3;
 
 export function saveResult(result: Omit<SavedResult, 'version'>): void {
   try {

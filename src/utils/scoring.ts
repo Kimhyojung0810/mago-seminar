@@ -27,12 +27,19 @@ export function calculateScores(answers: Record<number, number>): Scores {
 
 export function determineType(scores: Scores): ResultType {
   const { A, B, C } = scores;
-  const T = 20;
-  if (A >= T && B < T) return 'tiger';
-  if (B >= T && A < T) return 'puppy';
-  if (A >= T && B >= T) return 'fox';
-  if (C >= T || (A < T && B < T)) return 'penguin';
-  return 'fox';
+  const T = 17;
+  const GAP = 4;
+
+  const highA = A >= T;
+  const highB = B >= T;
+  const highC = C >= T;
+
+  if (highA && A - B >= GAP) return 'tiger';
+  if (highB && B - A >= GAP) return 'puppy';
+  if (highA && highB) return 'fox';
+  if (highC && C >= A && C >= B) return 'fox';
+
+  return 'penguin';
 }
 
 export function getScoreLevel(score: number): string {

@@ -43,7 +43,7 @@ export const questions: Question[] = [
       { text: '전력을 다해 1등을 유지한다', scores: { A: 2 } },
       { text: '슬쩍 기회를 만들어준다', scores: { B: 2 } },
       { text: '이기되, 압도적이지 않게 조절한다', scores: { C: 2 } },
-      { text: '게임은 게임이니까 크게 신경쓰지 않는다', scores: { A: 1, B: 1 } },
+      { text: '게임은 게임이니까 크게 신경쓰지 않는다', scores: { B: 1, C: 1 } },
     ],
   },
 
@@ -57,7 +57,7 @@ export const questions: Question[] = [
       { text: '무조건 역전을 노린다', scores: { A: 2 } },
       { text: '같이 하는 사람들 반응을 보고 결정한다', scores: { B: 2 } },
       { text: '안전하게 현재 순위를 지킨다', scores: { C: 2 } },
-      { text: '재미있는 쪽을 선택한다', scores: { B: 1, C: 1 } },
+      { text: '재미있는 쪽을 선택한다', scores: { A: 1, C: 1 } },
     ],
   },
 
@@ -86,7 +86,7 @@ export const questions: Question[] = [
       { text: '바로 지적한다', scores: { A: 2 } },
       { text: '분위기를 위해 넘어간다', scores: { B: 2 } },
       { text: '게임 끝나고 부드럽게 말한다', scores: { C: 2 } },
-      { text: '나도 유연하게 대응한다', scores: { A: 1, C: 1 } },
+      { text: '나도 유연하게 대응한다', scores: { B: 1, C: 1 } },
     ],
   },
 
