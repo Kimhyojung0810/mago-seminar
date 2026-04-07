@@ -3,6 +3,7 @@ import { useQuiz } from './hooks/useQuiz';
 import { IntroScreen } from './components/IntroScreen';
 import { QuestionScreen } from './components/QuestionScreen';
 import { ResultScreen } from './components/ResultScreen';
+import { SharedResultScreen } from './components/SharedResultScreen';
 
 export default function App() {
   const quiz = useQuiz();
@@ -11,6 +12,16 @@ export default function App() {
     <div className="app-shell bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06),transparent_50%),linear-gradient(to_bottom,#0c0f18,#111827_40%,#0c0f18)] text-white flex items-start justify-center">
       <div className="w-full max-w-[400px] px-5 py-6">
         <AnimatePresence mode="wait">
+          {quiz.phase === 'shared' && quiz.sharedScores && quiz.sharedResultKey && (
+            <SharedResultScreen
+              key="shared"
+              nickname={quiz.sharedNickname}
+              resultKey={quiz.sharedResultKey}
+              scores={quiz.sharedScores}
+              onStartTest={quiz.startFromShared}
+            />
+          )}
+
           {quiz.phase === 'intro' && (
             <IntroScreen
               key="intro"

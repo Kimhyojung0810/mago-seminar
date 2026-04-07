@@ -1,12 +1,16 @@
 import type { SavedResult } from '../types';
 
 const STORAGE_KEY = 'mago-seminar-result';
+const CURRENT_VERSION = 2;
 
-export function saveResult(result: SavedResult): void {
+export function saveResult(result: Omit<SavedResult, 'version'>): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...result, version: CURRENT_VERSION }),
+    );
   } catch {
-    // storage quota exceeded or unavailable
+    // quota exceeded or unavailable
   }
 }
 
@@ -15,7 +19,13 @@ export function getResult(): SavedResult | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw) as SavedResult;
-    if (!data.nickname || !data.resultKey || !data.scores || !data.answers) {
+    if (
+      !data.nickname ||
+      !data.resultKey ||
+      !data.scores ||
+      !data.answers ||
+      data.version !== CURRENT_VERSION
+    ) {
       clearResult();
       return null;
     }

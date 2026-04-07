@@ -46,14 +46,14 @@ export function IntroScreen({ nickname, onNicknameChange, onStart }: Props) {
               진심이 될까?
             </h1>
             <p className="text-[15px] leading-relaxed text-white/50">
-              보드게임 속 나의 승부 본능을 확인해보세요.
+              자기 인식 + 상황 판단으로 나의 승부 본능을 확인해보세요.
             </p>
           </div>
 
           <div className="flex gap-3 text-center text-[11px] text-white/45">
             {[
-              { val: '12', label: '문항' },
-              { val: '1분', label: '소요시간' },
+              { val: '20', label: '문항' },
+              { val: '3분', label: '소요시간' },
               { val: '4', label: '유형' },
             ].map((item) => (
               <div
