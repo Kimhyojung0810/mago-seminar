@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Share2, RotateCcw } from 'lucide-react';
 import { ResultCard } from './ResultCard';
-import { captureCard, downloadImage, shareOrDownload } from '../utils/capture';
+import { captureCard, downloadImage, shareImage } from '../utils/capture';
 import type { ResultType, Scores } from '../types';
 
 interface Props {
@@ -20,10 +20,10 @@ export function ResultScreen({ nickname, resultKey, scores, onReset }: Props) {
   const [busy, setBusy] = useState<BusyState>('idle');
   const [toast, setToast] = useState<string | null>(null);
 
-  const flash = (msg: string) => {
+  const flash = useCallback((msg: string) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 2200);
-  };
+    setTimeout(() => setToast(null), 2500);
+  }, []);
 
   const filename = `mago-seminar-${nickname || 'result'}.png`;
 
@@ -32,18 +32,23 @@ export function ResultScreen({ nickname, resultKey, scores, onReset }: Props) {
     setBusy('saving');
     try {
       const blob = await captureCard('result-card');
-      if (blob) {
-        await downloadImage(blob, filename);
+      if (!blob) {
+        flash('이미지 생성에 실패했습니다');
+        setBusy('idle');
+        return;
+      }
+      const ok = await downloadImage(blob, filename);
+      if (ok) {
         flash('이미지가 저장되었습니다');
       } else {
-        flash('이미지 생성에 실패했습니다');
+        flash('저장에 실패했습니다. 스크린샷을 이용해주세요.');
       }
     } catch {
       flash('저장에 실패했습니다');
     } finally {
       setBusy('idle');
     }
-  }, [busy, filename]);
+  }, [busy, filename, flash]);
 
   const handleShare = useCallback(async () => {
     if (busy !== 'idle') return;
@@ -55,20 +60,23 @@ export function ResultScreen({ nickname, resultKey, scores, onReset }: Props) {
         setBusy('idle');
         return;
       }
-      const outcome = await shareOrDownload(
+      const outcome = await shareImage(
         blob,
         filename,
         '마고의 세미나: 심리편',
         `${nickname}님의 보드게임 성향 결과`,
       );
-      if (outcome === 'downloaded') flash('공유가 지원되지 않아 저장되었습니다');
-      else if (outcome === 'error') flash('공유에 실패했습니다');
+      if (outcome === 'downloaded') {
+        flash('공유가 지원되지 않아 저장되었습니다');
+      } else if (outcome === 'error') {
+        flash('공유에 실패했습니다. 스크린샷을 이용해주세요.');
+      }
     } catch {
       flash('공유에 실패했습니다');
     } finally {
       setBusy('idle');
     }
-  }, [busy, filename, nickname]);
+  }, [busy, filename, nickname, flash]);
 
   return (
     <motion.div
@@ -80,7 +88,6 @@ export function ResultScreen({ nickname, resultKey, scores, onReset }: Props) {
     >
       <ResultCard nickname={nickname} resultKey={resultKey} scores={scores} />
 
-      {/* actions */}
       <div className="space-y-2.5 px-0.5">
         <button
           onClick={handleShare}
@@ -120,7 +127,6 @@ export function ResultScreen({ nickname, resultKey, scores, onReset }: Props) {
         그걸 어떻게 드러내느냐는 다릅니다.
       </p>
 
-      {/* toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
