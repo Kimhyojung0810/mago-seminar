@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { ProgressBar } from './ProgressBar';
 import { SCALE_OPTIONS } from '../data/questions';
+import { seminarTips } from '../data/seminarTips';
 import type { Question } from '../types';
 
 interface Props {
@@ -32,6 +33,11 @@ export function QuestionScreen({
 }: Props) {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
+  const tip = useMemo(
+    () => seminarTips[currentStep % seminarTips.length],
+    [currentStep],
+  );
+
   const handleSelect = useCallback(
     (value: number) => {
       onAnswer(question.id, value);
@@ -57,19 +63,27 @@ export function QuestionScreen({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={pageTransition}
-      className="space-y-4"
+      className="flex flex-col"
+      style={{ minHeight: 'calc(100dvh - 3rem)' }}
     >
-      {canGoBack && (
-        <button
-          onClick={onPrev}
-          className="flex items-center gap-0.5 text-sm text-white/40 active:text-white/70 transition-colors -ml-1 py-1"
-          aria-label="이전 문항으로"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          이전
-        </button>
-      )}
+      {/* back button */}
+      <div className="h-8 flex items-center">
+        {canGoBack && (
+          <button
+            onClick={onPrev}
+            className="flex items-center gap-0.5 text-sm text-white/40 active:text-white/70 transition-colors -ml-1"
+            aria-label="이전 문항으로"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            이전
+          </button>
+        )}
+      </div>
 
+      {/* spacer — pushes card toward center-bottom */}
+      <div className="flex-1 min-h-4" />
+
+      {/* question card */}
       <GlassCard className="p-5">
         <div className="space-y-6">
           <ProgressBar current={currentStep + 1} total={totalQuestions} />
@@ -83,7 +97,6 @@ export function QuestionScreen({
               transition={questionTransition}
               className="space-y-6"
             >
-              {/* question header */}
               <div className="space-y-2 pt-1">
                 {isScenario ? (
                   <span className="inline-block text-[11px] font-medium text-amber-400/60 bg-amber-400/[0.08] rounded-md px-1.5 py-0.5">
@@ -99,7 +112,6 @@ export function QuestionScreen({
                 </h2>
               </div>
 
-              {/* answer options */}
               {isScenario ? (
                 <div
                   className="space-y-2"
@@ -162,6 +174,26 @@ export function QuestionScreen({
           </AnimatePresence>
         </div>
       </GlassCard>
+
+      {/* seminar tip */}
+      <div className="mt-4 mb-2">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="rounded-2xl bg-white/[0.04] border border-white/[0.06] px-4 py-3.5"
+          >
+            <p className="text-[11px] leading-[1.7] text-white/30">
+              <span className="text-white/45 font-medium">세미나 노트</span>
+              <span className="mx-1.5 text-white/15">·</span>
+              {tip}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
