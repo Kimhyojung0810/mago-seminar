@@ -80,8 +80,8 @@ export function QuestionScreen({
         )}
       </div>
 
-      {/* top spacer — 3 parts above, 2 parts below → card sits slightly above center */}
-      <div className="flex-[3] min-h-2" />
+      {/* top spacer */}
+      <div className="flex-[1] min-h-2" />
 
       {/* question card */}
       <GlassCard className="p-5">
@@ -175,11 +175,8 @@ export function QuestionScreen({
         </div>
       </GlassCard>
 
-      {/* bottom spacer */}
-      <div className="flex-[2] min-h-2" />
-
-      {/* seminar tip — anchored near bottom */}
-      <div className="pb-2">
+      {/* seminar tip — right below the card */}
+      <div className="mt-3">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -197,6 +194,9 @@ export function QuestionScreen({
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* bottom spacer — absorbs remaining space */}
+      <div className="flex-[3] min-h-2" />
     </motion.div>
   );
 }
